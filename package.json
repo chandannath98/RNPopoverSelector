@@ -1,0 +1,11 @@
+{
+  "name": "rn-popover-selector",
+  "version": "1.0.8",
+  "description": "A react native selector",
+  "main": "index.tsx",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT"
+}
