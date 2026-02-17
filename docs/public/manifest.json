@@ -1,0 +1,26 @@
+{
+  "name": "RNPopoverSelector Documentation",
+  "short_name": "RNPopoverSelector",
+  "description": "Complete documentation and live examples for RNPopoverSelector - a powerful React Native selector component",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#667eea",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "categories": ["productivity", "developer"]
+}
