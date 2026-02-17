@@ -24,7 +24,7 @@ export interface SelectorItem {
   [key: string]: any;
 }
 
-interface RNPopoverSelectorProps {
+export interface RNPopoverSelectorProps {
   data: SelectorItem[];
   value: string | number | (string | number)[] | null;
   onChange: (item: SelectorItem | SelectorItem[] | null) => void;
@@ -46,55 +46,20 @@ interface RNPopoverSelectorProps {
   textStyle?: StyleProp<TextStyle>;
   disabled?: boolean
   disableStyle?: StyleProp<ViewStyle>;
-  icon?: (isOpen: boolean) => React.ReactNode
+  icon?: (isOpen: boolean) => React.ReactNode,
+
+  themeEnabled?: boolean;
+  TextComponent?: React.ComponentType<any>;
+  TextInputComponent?: React.ComponentType<any>;
+   colors?:Record<string, string>;
+  scale?: (v:number) => number;
+  vScale?: (v:number) => number;
+  mScale?: (v:number) => number;
+    selectorItemTextStyle?: StyleProp<TextStyle>
+  selectorItemStyle?: StyleProp<ViewStyle>
 }
 
-// --- 1. MEMOIZED ROW COMPONENT ---
-const SelectorRow = React.memo(
-  ({
-    item,
-    isSelected,
-    onSelect,
-    customRender,
-    color,
-  }: {
-    item: SelectorItem;
-    isSelected: boolean;
-    onSelect: (item: SelectorItem) => void;
-    customRender?: (item: SelectorItem, isSelected: boolean, onSelect: () => void) => React.ReactNode;
-    color?: string;
-  }) => {
-    const handlePress = () => onSelect(item);
 
-    if (customRender) {
-      return <>{customRender(item, isSelected, handlePress)}</>;
-    }
-
-    return (
-      <TouchableOpacity
-        style={[styles.item]} onPress={handlePress}>
-        <Text
-          style={[
-            styles.itemTitle,
-            isSelected && styles.activeTitle,
-            isSelected && color ? { color: color } : {},
-          ]}
-        >
-          {item.title}
-        </Text>
-        {isSelected && <Text style={{ color: color || '#007AFF' }}>✓</Text>}
-      </TouchableOpacity>
-    );
-  },
-  (prev, next) => {
-    return (
-      prev.isSelected === next.isSelected &&
-      prev.item.id === next.item.id &&
-      prev.color === next.color &&
-      prev.onSelect === next.onSelect
-    );
-  }
-);
 
 const RNPopoverSelector: React.FC<RNPopoverSelectorProps> = ({
   data,
@@ -115,8 +80,183 @@ const RNPopoverSelector: React.FC<RNPopoverSelectorProps> = ({
   textStyle,
   disabled,
   disableStyle,
-  icon
+  icon,
+  TextComponent=Text,
+  TextInputComponent=TextInput,
+  colors={},
+  scale=(v)=>v,
+  vScale=(v)=>v,
+  mScale=(v)=>v,
+  themeEnabled=false,
+    selectorItemTextStyle,
+  selectorItemStyle
 }) => {
+
+
+
+
+
+
+const styles = StyleSheet.create({
+  defaultButton: {
+    padding: mScale(12),
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: mScale(8),
+    backgroundColor: colors?.backgroundColor || 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  buttonText: { fontSize: scale(14),  flex: 1 },
+  overlay: { flex: 1,backgroundColor:'rgba(0, 0, 0, 0.07)' },
+  dropdown: {
+    position: 'absolute',
+    backgroundColor: colors?.backgroundColor || 'white',
+    borderRadius: mScale(12),
+    paddingVertical: vScale(8),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  searchContainer: {
+    paddingHorizontal: scale(10),
+    paddingBottom: vScale(8),
+    marginBottom: vScale(5),
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  searchInput: {
+    fontSize: scale(14),
+    padding: mScale(8),
+    backgroundColor: '#f9f9f9',
+    borderRadius: mScale(8),
+  },
+  item: {
+    paddingVertical: vScale(12),
+    paddingHorizontal: scale(16),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: vScale(44),
+  },
+  selectAllItem: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    marginBottom: vScale(5),
+  },
+  activeItem: { backgroundColor: '#F0F9FF' },
+  itemTitle: { fontSize: scale(14), },
+  activeTitle: { color: '#007AFF', 
+    
+    // fontWeight: '600' 
+  },
+  checkbox: {
+    width: mScale(20),
+    height: mScale(20),
+    borderRadius: mScale(4),
+    borderWidth: mScale(2),
+    borderColor: '#ccc',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkmark: {
+    color: 'white',
+    fontSize: scale(12),
+    fontWeight: 'bold',
+  },
+  clearBtnContainer: {
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+    marginTop: vScale(5),
+  },
+  clearButton: {
+    paddingVertical: vScale(12),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  clearButtonText: {
+    fontSize: scale(14),
+    // fontWeight: '600',
+  },
+});
+
+
+// --- 1. MEMOIZED ROW COMPONENT ---
+const SelectorRow = React.memo(
+  ({
+    item,
+    isSelected,
+    onSelect,
+    customRender,
+    color,
+   TextComponent=Text,
+  TextInputComponent=TextInput,
+  colors={},
+  scale=(v)=>v,
+  vScale=(v)=>v,
+  mScale=(v)=>v,
+  themeEnabled=false,
+  selectorItemTextStyle,
+  selectorItemStyle
+  }: {
+    item: SelectorItem;
+    isSelected: boolean;
+    onSelect: (item: SelectorItem) => void;
+    customRender?: (item: SelectorItem, isSelected: boolean, onSelect: () => void) => React.ReactNode;
+    color?: string;
+      TextComponent?: React.ComponentType<any>;
+  TextInputComponent?: React.ComponentType<any>;
+   colors?:Record<string, string>;
+  scale?: (v:number) => number;
+  vScale?: (v:number) => number;
+  mScale?: (v:number) => number;
+  themeEnabled?: boolean;
+  selectorItemTextStyle?: StyleProp<TextStyle>
+  selectorItemStyle?: StyleProp<ViewStyle>
+  }) => {
+    const handlePress = () => onSelect(item);
+
+    if (customRender) {
+      return <>{customRender(item, isSelected, handlePress)}</>;
+    }
+
+    return (
+      <TouchableOpacity
+        style={[styles.item,selectorItemStyle]} onPress={handlePress}>
+        <TextComponent
+        mode="medium"
+          style={[
+            styles.itemTitle,
+            isSelected && styles.activeTitle,
+            isSelected && color ? { color: color } : {},
+            themeEnabled?{}:{},
+            selectorItemTextStyle
+          ]}
+        >
+          {item.title}
+        </TextComponent>
+        {isSelected && <TextComponent style={{ color: color || '#007AFF' }}>✓</TextComponent>}
+      </TouchableOpacity>
+    );
+  },
+  (prev, next) => {
+    return (
+      prev.isSelected === next.isSelected &&
+      prev.item.id === next.item.id &&
+      prev.color === next.color &&
+      prev.onSelect === next.onSelect
+    );
+  }
+);
+
+
+
+
   const [visible, setVisible] = useState(false);
   
   const [dropdownPosition, setDropdownPosition] = useState<{
@@ -246,6 +386,14 @@ const RNPopoverSelector: React.FC<RNPopoverSelectorProps> = ({
           onSelect={handleSelect}
           customRender={renderItem}
           color={color}
+          TextComponent={TextComponent}
+  TextInputComponent={TextInputComponent}
+  colors={colors}
+  scale={scale}
+  vScale={vScale}
+  mScale={mScale}
+  selectorItemTextStyle={selectorItemTextStyle}
+  selectorItemStyle={selectorItemStyle}
         />
       );
     },
@@ -261,13 +409,13 @@ const RNPopoverSelector: React.FC<RNPopoverSelectorProps> = ({
           renderButton(selectedItem, visible)
         ) : (
           <View style={[styles.defaultButton, style ? style : {}, (disabled && disableStyle) ? disableStyle : {}]}>
-            <Text style={styles.buttonText} numberOfLines={1}>
+            <TextComponent style={[styles.buttonText,textStyle]} numberOfLines={1}>
               {!multiple && selectedItem && !Array.isArray(selectedItem)
                 ? (selectedItem as SelectorItem).title
                 : multiple && Array.isArray(selectedItem) && selectedItem.length > 0
                   ? `${selectedItem.length} Selected`
                   : placeholder}
-            </Text>
+            </TextComponent>
             {icon ? icon(visible) :
               <Entypo
                 name={visible ? "chevron-up" : "chevron-down"}
@@ -295,7 +443,7 @@ const RNPopoverSelector: React.FC<RNPopoverSelectorProps> = ({
               >
                 {searchable && (
                   <View style={styles.searchContainer}>
-                    <TextInput
+                    <TextInputComponent
                       style={styles.searchInput}
                       placeholder="Search..."
                       value={searchText}
@@ -320,21 +468,23 @@ const RNPopoverSelector: React.FC<RNPopoverSelectorProps> = ({
                   ListHeaderComponent={
                     multiple && filteredData.length > 0 ? (
                       <TouchableOpacity style={[styles.item, styles.selectAllItem]} onPress={handleToggleSelectAll}>
-                        <Text
+                        <TextComponent
+                        mode="bold"
                           style={[
                             styles.itemTitle,
-                            { fontWeight: 'bold', color: isAllSelected ? (color || '#007AFF') : '#333' },
+                            { color: isAllSelected ? (color || '#007AFF') : colors.textColor|| '#333' },
+                            themeEnabled?{}:{fontWeight:'bold'}
                           ]}
                         >
                           {selectAllLabel}
-                        </Text>
+                        </TextComponent>
                         <View
                           style={[
                             styles.checkbox,
                             isAllSelected && { borderColor: color || '#007AFF', backgroundColor: color || '#007AFF' },
                           ]}
                         >
-                          {isAllSelected && <Text style={styles.checkmark}>✓</Text>}
+                          {isAllSelected && <TextComponent style={styles.checkmark}>✓</TextComponent>}
                         </View>
                       </TouchableOpacity>
                     ) : null
@@ -350,9 +500,9 @@ const RNPopoverSelector: React.FC<RNPopoverSelectorProps> = ({
                        onPress={handleClear} 
                        style={styles.clearButton}
                      >
-                       <Text style={[styles.clearButtonText, { color: "#be1919ff" }]}>
+                       <TextComponent mode="medium" style={[styles.clearButtonText, { color: "#be1919ff" }, themeEnabled?{}:{fontWeight:'600'}]}>
                          {clearButtonLabel}
-                       </Text>
+                       </TextComponent>
                      </TouchableOpacity>
                   </View>
                 )}
@@ -366,89 +516,6 @@ const RNPopoverSelector: React.FC<RNPopoverSelectorProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  defaultButton: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    backgroundColor: 'white',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  buttonText: { fontSize: 14, color: '#333', flex: 1 },
-  overlay: { flex: 1,backgroundColor:'rgba(0, 0, 0, 0.07)' },
-  dropdown: {
-    position: 'absolute',
-    backgroundColor: 'white',
-    borderRadius: 12,
-    paddingVertical: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  searchContainer: {
-    paddingHorizontal: 10,
-    paddingBottom: 8,
-    marginBottom: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  searchInput: {
-    fontSize: 14,
-    padding: 8,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
-  },
-  item: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    height: 44,
-  },
-  selectAllItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-    marginBottom: 5,
-  },
-  activeItem: { backgroundColor: '#F0F9FF' },
-  itemTitle: { fontSize: 15, color: '#4B5563' },
-  activeTitle: { color: '#007AFF', fontWeight: '600' },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: '#ccc',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkmark: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  clearBtnContainer: {
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-    marginTop: 5,
-  },
-  clearButton: {
-    paddingVertical: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  clearButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});
+
 
 export default RNPopoverSelector;

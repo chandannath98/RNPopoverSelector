@@ -1,7 +1,12 @@
 
-# RNPopoverSelector
+# rn-popover-selector: A Powerful React Native Selector
 
-A **high-performance, customizable popover selector** for **React Native** with support for:
+
+
+[![npm version](https://img.shields.io/npm/v/rn-popover-selector.svg)](https://www.npmjs.com/package/rn-popover-selector)
+[![npm downloads](https://img.shields.io/npm/dm/rn-popover-selector.svg)](https://www.npmjs.com/package/rn-popover-selector)
+
+A **high-performance, customizable React Native selector** for **React Native**, This react native selector support:
 
 - ✅ Single & Multiple selection
 - 🔍 Searchable list
@@ -15,6 +20,14 @@ A **high-performance, customizable popover selector** for **React Native** with 
 
 ![Screenshot](https://i.postimg.cc/tJLksv1z/Screenshot-from-2026-01-22-14-35-26.png)
 ![Screenshot2](https://i.postimg.cc/MHX3Mj9Q/Screenshot-from-2026-01-22-14-34-30.png)
+
+
+
+## Demo
+You can try out the selector live in your browser or on your phone:
+
+[![Try it on Expo Snack](https://img.shields.io/badge/Try%20it%20on-Expo%20Snack-blue?logo=expo&labelColor=000000)](https://snack.expo.dev/@chandannath1/react-native-selector-rn-popover-selector)
+
 
 
 ## Installation
@@ -96,6 +109,8 @@ const [values, setValues] = useState<number[]>([]);
 | `disableStyle` | `ViewStyle` | — | Selector Style  when its disabled|
 | `showClearButton` | `boolean` | — | Show/Hide Clear Selection Button|
 | `clearButtonLabel` | `string` | — | clear Button Label|
+| `selectorItemTextStyle` | `TextStyle` | — | Text Style|
+| `selectorItemStyle` | `ViewStyle` | — | Selector Item Style|
 
 ---
 
