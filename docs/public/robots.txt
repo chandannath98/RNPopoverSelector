@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /node_modules/
+Disallow: /.vite/
+Disallow: /dist/
+
+# Sitemaps
+Sitemap: https://rnpopoverselector.netlify.app/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1

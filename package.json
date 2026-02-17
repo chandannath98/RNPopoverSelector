@@ -1,6 +1,6 @@
 {
   "name": "rn-popover-selector",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "React Native selector component that displays options in a customizable popover. A lightweight and easy-to-use react native selector for iOS and Android",
   "main": "index.tsx",
   "scripts": {
@@ -16,5 +16,14 @@
   "homepage": "https://github.com/chandannath98/RNPopoverSelector#readme",
   "bugs": {
     "url": "https://github.com/chandannath98/RNPopoverSelector/issues"
-  }
+  },
+  "files": [
+   
+    "index.tsx",
+    "README.md",
+    "RNPopoverSelector.tsx",
+    "LICENSE",
+    "LICENSE.txt"
+
+  ]
 }
